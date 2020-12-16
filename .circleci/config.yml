@@ -38,5 +38,9 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
+#      - codecov/upload:
+#          file: './coverage/clover.xml'
+#          token: ffa1dcf5-fef2-49a6-9906-a3601065fdd6
+
       # run tests!
       - run: gradle test
