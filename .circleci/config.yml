@@ -28,13 +28,6 @@ jobs:
     steps:
       - checkout
 
-      - codecov/upload:
-          file: coverage/coverage-final.json
-
-      - codecov/upload:
-          file: {{ coverage_report_filepath }}
-          conf: {{codecov.yaml}}
-
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -49,14 +42,7 @@ jobs:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
-      - store_test_results:
-          path: target/surefire-reports
-
-#      - codecov/upload:
-#          file: './coverage/clover.xml'
-#          token: ffa1dcf5-fef2-49a6-9906-a3601065fdd6
-
-      - run: bash <(curl -s https://codecov.io/bash) -t ffa1dcf5-fef2-49a6-9906-a3601065fdd6checkout
-
       # run tests!
       - run: gradle test
+
+      - run: bash <(curl -s https://codecov.io/bash) -t ffa1dcf5-fef2-49a6-9906-a3601065fdd6
