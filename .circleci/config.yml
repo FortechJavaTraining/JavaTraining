@@ -28,6 +28,10 @@ jobs:
     steps:
       - checkout
 
+      - codecov/upload:
+          file: {{ coverage_report_filepath }}
+          conf: {{codecov.yaml}}
+
       # Download and cache dependencies
       - restore_cache:
           keys:
