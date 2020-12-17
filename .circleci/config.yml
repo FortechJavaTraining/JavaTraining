@@ -29,6 +29,9 @@ jobs:
       - checkout
 
       - codecov/upload:
+          file: coverage/coverage-final.json
+
+      - codecov/upload:
           file: {{ coverage_report_filepath }}
           conf: {{codecov.yaml}}
 
