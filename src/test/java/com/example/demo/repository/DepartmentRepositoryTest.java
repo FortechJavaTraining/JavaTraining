@@ -57,22 +57,18 @@ public class DepartmentRepositoryTest {
 
     @Test
     public void updateEmployeeById() {
-        if (getDepartmentEntities().size() == 0) {
-            DepartmentEntity employeeEntity = getDepartmentEntity();
-            employeeEntity.setName("Money111");
-            departmentRepository.save(employeeEntity);
+        DepartmentEntity employeeEntity = getDepartmentEntity();
+        employeeEntity.setName("Money111");
+        departmentRepository.save(employeeEntity);
 
-            List<DepartmentEntity> departmentEntities = getDepartmentEntities();
+        List<DepartmentEntity> departmentEntities = getDepartmentEntities();
 
-            assertEquals(departmentEntities.get(0).getName(), "Money111");
-        }
+        assertEquals(departmentEntities.get(0).getName(), "Money111");
     }
 
     @Test
     public void deleteEmployeeById() {
-        if (getDepartmentEntities().size() == 1) {
-            departmentRepository.deleteById(1L);
-        }
+        departmentRepository.deleteById(1L);
 
         List<DepartmentEntity> departmentEntities = getDepartmentEntities();
 
