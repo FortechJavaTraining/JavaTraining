@@ -2,7 +2,6 @@ package com.example.demo.repository;
 
 import com.example.demo.entities.DepartmentEntity;
 import com.example.demo.entities.EmployeeEntity;
-import com.example.demo.exeption.EmployeeNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
