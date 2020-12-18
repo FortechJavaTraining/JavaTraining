@@ -84,3 +84,11 @@ jacocoTestReport {
     }
 }
 
+testlogger {
+    theme 'mocha'
+    showExceptions true
+    slowThreshold 1000
+    showSummary true
+    showStandardStreams false
+}
+
