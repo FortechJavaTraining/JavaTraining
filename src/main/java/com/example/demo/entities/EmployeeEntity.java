@@ -27,6 +27,10 @@ public class EmployeeEntity {
     @JoinColumn(name = "DEPARTMENT_ID")
     private DepartmentEntity departmentEntity;
 
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")
+    private TeamEntity teamEntity;
+
     public EmployeeEntity(String name) {
         this.name = name;
     }

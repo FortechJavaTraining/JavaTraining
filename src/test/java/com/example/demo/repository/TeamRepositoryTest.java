@@ -22,20 +22,11 @@ import static org.junit.Assert.*;
 public class TeamRepositoryTest {
     @Autowired
     private TeamRepository teamRepository;
-    @Autowired
-    private DepartmentRepository departmentRepository;
 
     @Before
-    public void saveDepartmentAndTeam() {
-        TeamEntity teamEntityEntity = new TeamEntity();
-        teamEntity.setName("Money");
-
-        TeamEntity teamEntityEntitySaved = departmentRepository.save(teamEntityEntity);
-
+    public void saveTeam() {
         TeamEntity teamEntity = new TeamEntity();
         teamEntity.setName("Norbeboy");
-        teamEntity.setJob("Dev");
-        teamEntity.setTeamEntity(teamEntityEntitySaved);
 
         teamRepository.save(teamEntity);
     }

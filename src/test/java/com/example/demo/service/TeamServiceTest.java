@@ -21,49 +21,36 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class TeamServiceTest {
-
     @InjectMocks
     private TeamService service;
     @Mock
     private TeamRepository teamRepository;
-    @Mock
-    private DepartmentRepository departmentRepository;
 
     @Test
     public void givenAnEntity_getTeamById_shouldReturnValidDto() {
         Team team = new Team();
-        team.setId(3L);
+        team.setId(1L);
 
         TeamEntity teamEntity = new TeamEntity();
-        teamEntity.setId(3L);
-
-        TeamEntity departmentEntity = new TeamEntity();
         teamEntity.setId(1L);
-        teamEntity.setTeamEntity(teamEntity);
 
-        when(teamRepository.findById(3L)).thenReturn(Optional.of(teamEntity));
+        when(teamRepository.findById(1L)).thenReturn(Optional.of(teamEntity));
 
-        Team teamByTd = service.getTeamById(3L);
+        Team teamById = service.getTeamById(1L);
 
-        assertEquals(team.getId(), teamByTd.getId());
+        assertEquals(team.getId(), teamById.getId());
     }
 
     @Test
     public void givenAnEntity_saveTeam_shouldReturnValidDto() {
         Team team = new Team();
         team.setName("Norbeee");
-        team.setId(2L);
-        team.setDepartmentId(2L);
+        team.setId(1L);
 
         TeamEntity teamEntity = new TeamEntity();
         teamEntity.setName("Norbeee");
-        teamEntity.setId(2L);
+        teamEntity.setId(1L);
 
-        DepartmentEntity departmentEntity = new DepartmentEntity();
-        departmentEntity.setId(1L);
-        teamEntity.setDepartmentEntity(departmentEntity);
-
-        when(departmentRepository.findById(2L)).thenReturn(Optional.of(new DepartmentEntity("")));
         when(teamRepository.save(Mockito.any(TeamEntity.class))).thenReturn(teamEntity);
 
         Team team2 = service.saveTeam(team);
@@ -75,22 +62,16 @@ public class TeamServiceTest {
     public void givenAnEntity_updateTeam_shouldReturnValidDto() {
         Team team = new Team();
         team.setName("Norbeee");
-        team.setId(2L);
-        team.setDepartmentId(1L);
+        team.setId(1L);
 
         TeamEntity teamEntity = new TeamEntity();
         teamEntity.setName("Norbeee");
-        teamEntity.setId(2L);
+        teamEntity.setId(1L);
 
-        DepartmentEntity departmentEntity = new DepartmentEntity();
-        departmentEntity.setId(1L);
-        teamEntity.setDepartmentEntity(departmentEntity);
-
-        when(teamRepository.findById(2L)).thenReturn(Optional.of(teamEntity));
-        when(departmentRepository.findById(1L)).thenReturn(Optional.of(new DepartmentEntity("")));
+        when(teamRepository.findById(1L)).thenReturn(Optional.of(teamEntity));
         when(teamRepository.save(Mockito.any(TeamEntity.class))).thenReturn(teamEntity);
 
-        Team team2 = service.updateTeam(team, 2L);
+        Team team2 = service.updateTeam(team, 1L);
 
         assertEquals(team.getName(), team2.getName());
     }
@@ -100,17 +81,12 @@ public class TeamServiceTest {
         Team team = new Team();
         team.setName("Norbeee");
         team.setId(2L);
-        team.setDepartmentId(1L);
         Team team1 = new Team();
         team.setName("Norbeee");
         team.setId(2L);
-        team.setDepartmentId(1L);
         List<Team> teams = new ArrayList<>();
         teams.add(team);
         teams.add(team1);
-
-        DepartmentEntity departmentEntity = new DepartmentEntity();
-        departmentEntity.setId(1L);
 
         TeamEntity teamEntity = new TeamEntity();
         teamEntity.setName("Norbeee");
@@ -121,8 +97,6 @@ public class TeamServiceTest {
         List<TeamEntity> teamEntities = new ArrayList<>();
         teamEntities.add(teamEntity);
         teamEntities.add(teamEntity1);
-        teamEntity.setDepartmentEntity(departmentEntity);
-        teamEntity1.setDepartmentEntity(departmentEntity);
 
         when(teamRepository.findAll()).thenReturn(teamEntities);
 
@@ -134,21 +108,17 @@ public class TeamServiceTest {
     @Test
     public void givenAnEntity_deleteTeam_shouldReturnValidDto() {
         Team team = new Team();
-        team.setId(3L);
+        team.setId(1L);
 
         TeamEntity teamEntity = new TeamEntity();
-        teamEntity.setId(3L);
+        teamEntity.setId(1L);
 
-        DepartmentEntity departmentEntity = new DepartmentEntity();
-        departmentEntity.setId(1L);
-        teamEntity.setDepartmentEntity(departmentEntity);
+        when(teamRepository.findById(1L)).thenReturn(Optional.of(teamEntity));
 
-        when(teamRepository.findById(3L)).thenReturn(Optional.of(teamEntity));
-
-        Team teamByTd = service.deleteTeam(3L);
+        Team teamByTd = service.deleteTeam(1L);
 
         assertEquals(team.getId(), teamByTd.getId());
 
-        verify(teamRepository).deleteById(3L);
+        verify(teamRepository).deleteById(1L);
     }
 }

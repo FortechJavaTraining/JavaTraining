@@ -1,0 +1,1 @@
+ALTER TABLE EMPLOYEE ADD COLUMN TEAM_ID bigint null constraint FK_EMPLOYEE_TEAM_ID references TEAM(ID);
