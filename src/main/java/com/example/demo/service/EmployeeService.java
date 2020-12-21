@@ -1,17 +1,19 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.Employee;
+import com.example.demo.dto.TeamLeadDto;
 import com.example.demo.entities.DepartmentEntity;
+import com.example.demo.entities.EmployeeEntity;
 import com.example.demo.exeption.DepartmentNotFoundException;
 import com.example.demo.exeption.EmployeeNotFoundException;
-import com.example.demo.dto.Employee;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.EmployeeRepository;
-import com.example.demo.entities.EmployeeEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -40,7 +42,7 @@ public class EmployeeService {
 
     public Employee updateEmployee(Employee employee, Long id) {
         EmployeeEntity employeeEntity = setEmployeeEntityDetails(employee, id);
-        //employeeRepository.save(employeeEntity);
+        // employeeRepository.save(employeeEntity);
         return convertEntityToEmployee(employeeEntity);
     }
 
@@ -54,7 +56,7 @@ public class EmployeeService {
     private Employee convertEntityToEmployee(EmployeeEntity employeeEntity) {
         Employee employee = new Employee();
         employee.setName(employeeEntity.getName());
-        if(employeeEntity.getId() != null) {
+        if (employeeEntity.getId() != null) {
             employee.setId(employeeEntity.getId());
         }
         employee.setJob(employeeEntity.getJob());
@@ -82,4 +84,26 @@ public class EmployeeService {
     private DepartmentEntity getDepartmentEntity(Long id) {
         return departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFoundException(id));
     }
+
+    public void updateEmployeeTeamLead(TeamLeadDto teamLeadDto) {
+        EmployeeEntity employeeTeamLead = employeeRepository.findById(teamLeadDto.getTeamLeadId()).orElseThrow(() -> new EmployeeNotFoundException(teamLeadDto.getTeamLeadId()));
+        for (Long employeesId : teamLeadDto.getEmployees()) {
+            EmployeeEntity employeeEntity = employeeRepository.findById(employeesId).orElseThrow(() -> new EmployeeNotFoundException(employeesId));
+            employeeEntity.setTeamLead(employeeTeamLead);
+            employeeRepository.save(employeeEntity);
+
+        }
+    }
+
+    public void deleteTeamLeadId(List<Long> employeeId) {
+        for (int i = 0; i < employeeId.size(); i++) {
+            int finalI = i;
+            EmployeeEntity employeeEntity = employeeRepository.findById(employeeId.get(i)).orElseThrow(() -> new EmployeeNotFoundException(employeeId.get(finalI)));
+            employeeEntity.setTeamLead(null);
+            employeeRepository.save(employeeEntity);
+        }
+    }
 }
+
+
+

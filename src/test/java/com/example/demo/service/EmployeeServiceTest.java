@@ -1,8 +1,10 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Employee;
+import com.example.demo.dto.TeamLeadDto;
 import com.example.demo.entities.DepartmentEntity;
 import com.example.demo.entities.EmployeeEntity;
+import com.example.demo.exeption.EmployeeNotFoundException;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.EmployeeRepository;
 import org.junit.Test;
@@ -13,8 +15,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -46,6 +50,7 @@ public class EmployeeServiceTest {
 
         assertEquals(employee.getId(), employeeByTd.getId());
     }
+
 
     @Test
     public void givenAnEntity_saveEmployee_shouldReturnValidDto() {
@@ -149,5 +154,74 @@ public class EmployeeServiceTest {
         assertEquals(employee.getId(), employeeByTd.getId());
 
         verify(employeeRepository).deleteById(3L);
+    }
+
+    @Test
+    public void givenTeamLeadId_updateTeamLead_expectValidDtoSuccess() {
+        TeamLeadDto teamLeadDto = new TeamLeadDto();
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        teamLeadDto.setTeamLeadId(1);
+        teamLeadDto.setEmployees(Arrays.asList(1L, 2L));
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employeeEntity));
+        when(employeeRepository.findById(2L)).thenReturn(Optional.of(employeeEntity));
+
+        service.updateEmployeeTeamLead(teamLeadDto);
+
+        verify(employeeRepository, times(2)).save(employeeEntity);
+
+    }
+
+    @Test(expected = EmployeeNotFoundException.class)
+    public void givenTeamLeadId_updateTeamLead_expectException() {
+        TeamLeadDto teamLeadDto = new TeamLeadDto();
+        teamLeadDto.setTeamLeadId(1);
+        teamLeadDto.setEmployees(Arrays.asList(1L, 2L));
+        when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
+
+        service.updateEmployeeTeamLead(teamLeadDto);
+    }
+
+
+    @Test
+    public void givenEmployeeId_deleteTeamLead_expectValidDtoSuccess() {
+        List<EmployeeEntity> employeeEntities = new ArrayList<>();
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setId(1L);
+        employeeEntity.setJob("Gradinar");
+        EmployeeEntity employeeEntity1 = new EmployeeEntity();
+        employeeEntity1.setId(2L);
+        employeeEntity1.setJob("Gradinar");
+        employeeEntities.add(employeeEntity);
+        employeeEntities.add(employeeEntity1);
+
+
+        List<Long> employeeId = new ArrayList<>();
+        employeeId.add(1L);
+        employeeId.add(2L);
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employeeEntity));
+        when(employeeRepository.findById(2L)).thenReturn(Optional.of(employeeEntity1));
+
+        service.deleteTeamLeadId(employeeId);
+
+        verify(employeeRepository, times(1)).save(employeeEntity);
+
+    }
+
+
+    @Test(expected = EmployeeNotFoundException.class)
+    public void givenTeamLeadId_deleteTeamLead_expectException() {
+        List<Long> employeeId = new ArrayList<>();
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setId(1L);
+        employeeEntity.setJob("Gradinar");
+
+        employeeId.add(1L);
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
+
+        service.deleteTeamLeadId(employeeId);
+
+
     }
 }
