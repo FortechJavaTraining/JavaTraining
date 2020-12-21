@@ -7,7 +7,6 @@ import com.example.demo.entities.EmployeeEntity;
 import com.example.demo.exeption.DepartmentNotFoundException;
 import com.example.demo.exeption.EmployeeExistInDepartment;
 import com.example.demo.repository.DepartmentRepository;
-import com.example.demo.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
