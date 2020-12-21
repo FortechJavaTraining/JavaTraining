@@ -30,7 +30,6 @@ public class TeamEntity {
     @JoinColumn(name = "TEAM_LEAD")
     private EmployeeEntity employeeEntity;
 
-
     @OneToMany(mappedBy = "teamEntity", fetch = FetchType.LAZY)
     private List<EmployeeEntity> employeeEntityList = new ArrayList<>();
 

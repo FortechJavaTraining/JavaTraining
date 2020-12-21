@@ -31,7 +31,7 @@ public class EmployeeEntity {
     private DepartmentEntity departmentEntity;
 
     @ManyToOne
-    @JoinColumn(name = "TEAM_ENTITY_ID")
+    @JoinColumn(name = "TEAM_ID")
     private TeamEntity teamEntity;
 
     public EmployeeEntity(String name) {
