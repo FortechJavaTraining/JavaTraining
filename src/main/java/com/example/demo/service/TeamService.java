@@ -1,0 +1,141 @@
+package com.example.demo.service;
+
+import com.example.demo.dto.Employee;
+import com.example.demo.dto.Team;
+import com.example.demo.entities.DepartmentEntity;
+import com.example.demo.entities.EmployeeEntity;
+import com.example.demo.entities.TeamEntity;
+import com.example.demo.exeption.DepartmentNotFoundException;
+import com.example.demo.exeption.EmployeeNotFoundException;
+import com.example.demo.exeption.TeamNotFoundException;
+import com.example.demo.repository.DepartmentRepository;
+import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.repository.TeamRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+@Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
+public class TeamService {
+    private final TeamRepository teamRepository;
+    private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
+
+    public Team saveTeam(Team team) {
+        TeamEntity teamEntity = new TeamEntity();
+        setTeamEntity(team, teamEntity);
+        TeamEntity teamEntity1 = teamRepository.save(teamEntity);
+        return convertTeamEntityToTeam(teamEntity1);
+    }
+
+    public List<Team> getAllTeams() {
+        return StreamSupport.stream(teamRepository.findAll().spliterator(), false)
+                .map(this::convertTeamEntityToTeam).collect(Collectors.toList());
+    }
+
+    public Team getTeamById(Long id) {
+        TeamEntity teamEntity = getTeamEntity(id);
+        return convertTeamEntityToTeam(teamEntity);
+    }
+
+    public Team updateTeam(Team team, Long id) {
+        TeamEntity teamEntity = setTeamEntityDetails(team, id);
+        teamRepository.save(teamEntity);
+        return convertTeamEntityToTeam(teamEntity);
+    }
+
+    public Team deleteTeam(Long id) {
+        TeamEntity teamEntity = getTeamEntity(id);
+        Team team = convertTeamEntityToTeam(teamEntity);
+        teamRepository.deleteById(id);
+        return team;
+    }
+
+
+    private Team convertTeamEntityToTeam(TeamEntity teamEntity) {
+        Team team = new Team();
+        team.setId(teamEntity.getId());
+        team.setName(teamEntity.getName());
+        team.setTeam_lead(teamEntity.getEmployeeEntity().getId());
+        team.setExt_id(teamEntity.getExt_id());
+        team.setTeam_members(convertTeamEntityToEmployee(teamEntity));
+        //  team.setTeam_members(teamEntity.getEmployeeEntityList().stream().map(this::convertEntityToEmployee).collect(Collectors.toList()));
+        return team;
+    }
+    public List<Employee> getAllEmployees() {
+        return StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
+                .map(this::convertEntityToEmployee)
+                .collect(Collectors.toList());}
+
+
+
+        private List<Employee> convertTeamEntityToEmployee(TeamEntity teamEntity) {
+        List<Employee> employees = new ArrayList<>();
+        for (EmployeeEntity employeeEntity : teamEntity.getEmployeeEntityList()) {
+            Employee employee = convertEntityToEmployee(employeeEntity);
+            employees.add(employee);
+        }
+        return employees;
+    }
+
+    private List<EmployeeEntity> convertTeamToEmployeeEntity(Team team) {
+        List<EmployeeEntity> employeeEntities = new ArrayList<>();
+        for (Employee employee : team.getTeam_members()) {
+            EmployeeEntity employeeEntity = convertEmployeeToEntity(employee);
+            employeeEntities.add(employeeEntity);
+        }
+        return employeeEntities;
+    }
+
+    public Employee convertEntityToEmployee(EmployeeEntity employeeEntity) {
+        Employee employee = new Employee();
+        employee.setId(employeeEntity.getId());
+        employee.setName(employeeEntity.getName());
+        employee.setJob(employeeEntity.getJob());
+        employee.setDepartmentId(employeeEntity.getDepartmentEntity().getId());
+        employee.setDepartmentName(employeeEntity.getDepartmentEntity().getName());
+        return employee;
+    }
+
+    public EmployeeEntity convertEmployeeToEntity(Employee employee) {
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setId(employee.getId());
+        employeeEntity.setName(employee.getName());
+        employeeEntity.setJob(employee.getJob());
+        employeeEntity.setDepartmentEntity(getDepartmentEntity(employee.getDepartmentId()));
+        return employeeEntity;
+    }
+
+    private TeamEntity setTeamEntityDetails(Team team, Long id) {
+        TeamEntity teamEntity = getTeamEntity(id);
+        setTeamEntity(team, teamEntity);
+        return teamEntity;
+    }
+
+    private void setTeamEntity(Team team, TeamEntity teamEntity) {
+        teamEntity.setId(team.getId());
+        teamEntity.setName(team.getName());
+        teamEntity.setExt_id(team.getExt_id());
+        teamEntity.setEmployeeEntity(getEmployeeEntity(team.getTeam_lead()));
+        teamEntity.setEmployeeEntityList(convertTeamToEmployeeEntity(team));
+    }
+
+    private TeamEntity getTeamEntity(Long id) {
+        return teamRepository.findById(id).orElseThrow(() -> new TeamNotFoundException(id));
+    }
+
+    private EmployeeEntity getEmployeeEntity(Long id) {
+        return employeeRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
+    }
+    private DepartmentEntity getDepartmentEntity(Long id) {
+        return departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFoundException(id));
+    }
+
+}

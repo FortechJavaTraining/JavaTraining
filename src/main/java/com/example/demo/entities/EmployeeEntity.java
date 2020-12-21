@@ -1,10 +1,13 @@
 package com.example.demo.entities;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +29,10 @@ public class EmployeeEntity {
     @ManyToOne
     @JoinColumn(name = "DEPARTMENT_ID")
     private DepartmentEntity departmentEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ENTITY_ID")
+    private TeamEntity teamEntity;
 
     public EmployeeEntity(String name) {
         this.name = name;
