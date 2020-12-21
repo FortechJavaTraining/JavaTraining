@@ -2,7 +2,7 @@ create table  TEAM
 (
     ID bigint not null constraint PK_TEAM primary key,
     NAME varchar (255),
-    EXT_ID bigint not null,
+    EXTERNAL_ID bigint not null,
     TEAM_LEAD bigint not null
 );
 CREATE SEQUENCE S_TEAM

@@ -40,7 +40,7 @@ public class EmployeeService {
 
     public Employee updateEmployee(Employee employee, Long id) {
         EmployeeEntity employeeEntity = setEmployeeEntityDetails(employee, id);
-        //employeeRepository.save(employeeEntity);
+        employeeRepository.save(employeeEntity);
         return convertEntityToEmployee(employeeEntity);
     }
 

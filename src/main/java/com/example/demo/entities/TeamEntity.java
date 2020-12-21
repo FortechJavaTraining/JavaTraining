@@ -1,6 +1,5 @@
 package com.example.demo.entities;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,12 +22,12 @@ public class TeamEntity {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "EXT_ID")
-    private Long ext_id;
+    @Column(name = "EXTERNAL_ID")
+    private Long externalId;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "TEAM_LEAD")
-    private EmployeeEntity employeeEntity;
+    private EmployeeEntity teamLead;
 
     @OneToMany(mappedBy = "teamEntity", fetch = FetchType.LAZY)
     private List<EmployeeEntity> employeeEntityList = new ArrayList<>();
