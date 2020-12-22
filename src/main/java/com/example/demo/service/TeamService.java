@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -62,17 +61,11 @@ public class TeamService {
         Team team = new Team();
         team.setId(teamEntity.getId());
         team.setName(teamEntity.getName());
-        team.setTeamLead(teamEntity.getTeamLead().getId());
+        if (teamEntity.getTeamLead() != null)
+            team.setTeamLead(teamEntity.getTeamLead().getId());
         team.setExternalId(teamEntity.getExternalId());
         team.setTeamMembers(convertTeamEntityToEmployee(teamEntity));
-        //team.setTeam_members(teamEntity.getEmployeeEntityList().stream().map(this::convertEntityToEmployee).collect(Collectors.toList()));
         return team;
-    }
-
-    public List<Employee> getAllEmployees() {
-        return StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
-                .map(this::convertEntityToEmployee)
-                .collect(Collectors.toList());
     }
 
     private List<Employee> convertTeamEntityToEmployee(TeamEntity teamEntity) {
@@ -82,15 +75,6 @@ public class TeamService {
             employees.add(employee);
         }
         return employees;
-    }
-
-    private List<EmployeeEntity> convertTeamToEmployeeEntity(Team team) {
-        List<EmployeeEntity> employeeEntities = new ArrayList<>();
-        for (Employee employee : team.getTeamMembers()) {
-            EmployeeEntity employeeEntity = convertEmployeeToEntity(employee);
-            employeeEntities.add(employeeEntity);
-        }
-        return employeeEntities;
     }
 
     public Employee convertEntityToEmployee(EmployeeEntity employeeEntity) {
@@ -103,15 +87,6 @@ public class TeamService {
         return employee;
     }
 
-    public EmployeeEntity convertEmployeeToEntity(Employee employee) {
-        EmployeeEntity employeeEntity = new EmployeeEntity();
-        employeeEntity.setId(employee.getId());
-        employeeEntity.setName(employee.getName());
-        employeeEntity.setJob(employee.getJob());
-        employeeEntity.setDepartmentEntity(getDepartmentEntity(employee.getDepartmentId()));
-        return employeeEntity;
-    }
-
     private TeamEntity setTeamEntityDetails(Team team, Long id) {
         TeamEntity teamEntity = getTeamEntity(id);
         setTeamEntity(team, teamEntity);
@@ -122,8 +97,8 @@ public class TeamService {
         teamEntity.setId(team.getId());
         teamEntity.setName(team.getName());
         teamEntity.setExternalId(team.getExternalId());
-        teamEntity.setTeamLead(getEmployeeEntity(team.getTeamLead()));
-        teamEntity.setEmployeeEntityList(convertTeamToEmployeeEntity(team));
+        if (team.getTeamLead() != 0)
+            teamEntity.setTeamLead(getEmployeeEntity(team.getTeamLead()));
     }
 
     private TeamEntity getTeamEntity(Long id) {

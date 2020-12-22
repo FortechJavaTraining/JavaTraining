@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TeamEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Team")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "S_TEAM")
     @SequenceGenerator(name = "S_TEAM", sequenceName = "S_TEAM", allocationSize = 1)
     private Long id;
 
