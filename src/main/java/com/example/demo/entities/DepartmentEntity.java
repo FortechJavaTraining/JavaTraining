@@ -26,9 +26,6 @@ public class DepartmentEntity {
     @OneToMany(mappedBy = "departmentEntity", fetch = FetchType.LAZY)
     private List<EmployeeEntity> employeeEntityList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "teamLead")
-    private TeamEntity user;
-
     public DepartmentEntity(String name) {
         this.name = name;
     }
