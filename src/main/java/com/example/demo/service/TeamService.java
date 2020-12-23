@@ -94,9 +94,18 @@ public class TeamService {
     }
 
     private void setTeamEntity(Team team, TeamEntity teamEntity) {
+        if(team.getId()!=0)
         teamEntity.setId(team.getId());
+        if(team.getName()!=null)
         teamEntity.setName(team.getName());
+        if(team.getExternalId()!=0)
         teamEntity.setExternalId(team.getExternalId());
+        if (team.getTeamLead() != 0)
+            teamEntity.setTeamLead(getEmployeeEntity(team.getTeamLead()));
+    }
+
+    private void updateTeamEntity(Team team, TeamEntity teamEntity) {
+        teamEntity.setName(team.getName());
         if (team.getTeamLead() != 0)
             teamEntity.setTeamLead(getEmployeeEntity(team.getTeamLead()));
     }
