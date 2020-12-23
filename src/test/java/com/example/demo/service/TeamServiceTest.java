@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.Employee;
 import com.example.demo.dto.Team;
 import com.example.demo.entities.DepartmentEntity;
+import com.example.demo.entities.EmployeeEntity;
 import com.example.demo.entities.TeamEntity;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.TeamRepository;
@@ -120,5 +122,22 @@ public class TeamServiceTest {
         assertEquals(team.getId(), teamByTd.getId());
 
         verify(teamRepository).deleteById(1L);
+    }
+
+    @Test
+    public void givenAnEntity_convertEntityToEmployee_shouldReturnValidDto() {
+        Employee employee = new Employee();
+        employee.setId(1L);
+
+        DepartmentEntity departmentEntity = new DepartmentEntity();
+        departmentEntity.setId(1L);
+
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setId(1L);
+        employeeEntity.setDepartmentEntity(departmentEntity);
+
+        Employee employee1 = service.convertEntityToEmployee(employeeEntity);
+
+        assertEquals(employee1.getId(), employee.getId());
     }
 }

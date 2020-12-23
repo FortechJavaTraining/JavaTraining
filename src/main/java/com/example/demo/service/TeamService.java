@@ -83,6 +83,7 @@ public class TeamService {
 
     public Employee convertEntityToEmployee(EmployeeEntity employeeEntity) {
         Employee employee = new Employee();
+
         employee.setId(employeeEntity.getId());
         employee.setName(employeeEntity.getName());
         employee.setJob(employeeEntity.getJob());
