@@ -66,7 +66,7 @@ public class EmployeeService {
         employee.setDepartmentId(employeeEntity.getDepartmentEntity().getId());
         employee.setDepartmentName(employeeEntity.getDepartmentEntity().getName());
         if (employeeEntity.getTeamEntity() != null)
-            employee.setTeamId(employeeEntity.getTeamEntity().getId());
+            employee.setTeamName(employeeEntity.getTeamEntity().getName());
         return employee;
     }
 

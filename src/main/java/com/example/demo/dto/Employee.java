@@ -12,4 +12,5 @@ public class Employee {
     private long departmentId;
     private String departmentName;
     private long teamId;
+    private String teamName;
 }

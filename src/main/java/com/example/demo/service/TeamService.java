@@ -2,13 +2,10 @@ package com.example.demo.service;
 
 import com.example.demo.dto.Employee;
 import com.example.demo.dto.Team;
-import com.example.demo.entities.DepartmentEntity;
 import com.example.demo.entities.EmployeeEntity;
 import com.example.demo.entities.TeamEntity;
-import com.example.demo.exeption.DepartmentNotFoundException;
 import com.example.demo.exeption.EmployeeNotFoundException;
 import com.example.demo.exeption.TeamNotFoundException;
-import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.TeamRepository;
 import lombok.AllArgsConstructor;
@@ -25,7 +22,6 @@ import java.util.stream.StreamSupport;
 public class TeamService {
     private final TeamRepository teamRepository;
     private final EmployeeRepository employeeRepository;
-    private final DepartmentRepository departmentRepository;
 
     public Team saveTeam(Team team) {
         TeamEntity teamEntity = new TeamEntity();
@@ -83,10 +79,9 @@ public class TeamService {
 
     public Employee convertEntityToEmployee(EmployeeEntity employeeEntity) {
         Employee employee = new Employee();
-
         employee.setId(employeeEntity.getId());
-        employee.setName(employeeEntity.getName());
         employee.setJob(employeeEntity.getJob());
+        employee.setName(employeeEntity.getName());
         employee.setDepartmentId(employeeEntity.getDepartmentEntity().getId());
         employee.setDepartmentName(employeeEntity.getDepartmentEntity().getName());
         return employee;
