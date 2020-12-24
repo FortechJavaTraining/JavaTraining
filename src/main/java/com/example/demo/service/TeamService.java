@@ -55,7 +55,6 @@ public class TeamService {
 
     private Team convertTeamEntityToTeam(TeamEntity teamEntity) {
         Team team = new Team();
-        if (teamEntity.getId() != null)
             team.setId(teamEntity.getId());
         if (teamEntity.getName() != null)
             team.setName(teamEntity.getName());
@@ -63,7 +62,6 @@ public class TeamService {
             team.setTeamLead(teamEntity.getTeamLead().getId());
         if (teamEntity.getExternalId() != null)
             team.setExternalId(teamEntity.getExternalId());
-        if (teamEntity.getEmployeeEntityList() != null)
             team.setTeamMembers(convertTeamEntityToEmployee(teamEntity));
         return team;
     }
@@ -98,7 +96,7 @@ public class TeamService {
             teamEntity.setId(team.getId());
         if (team.getName() != null)
             teamEntity.setName(team.getName());
-        if (team.getExternalId() != 0)
+        if (team.getExternalId() != null)
             teamEntity.setExternalId(team.getExternalId());
         if (team.getTeamLead() != 0)
             teamEntity.setTeamLead(getEmployeeEntity(team.getTeamLead()));

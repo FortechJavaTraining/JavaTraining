@@ -10,7 +10,7 @@ import java.util.List;
 public class Team {
     private long id;
     private String name;
-    private long externalId;
+    private String externalId;
     private long teamLead;
     private List<Employee> teamMembers;
 }

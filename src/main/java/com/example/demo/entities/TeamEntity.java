@@ -23,7 +23,7 @@ public class TeamEntity {
     private String name;
 
     @Column(name = "EXTERNAL_ID")
-    private Long externalId;
+    private String externalId;
 
     @OneToOne
     @JoinColumn(name = "TEAM_LEAD")
