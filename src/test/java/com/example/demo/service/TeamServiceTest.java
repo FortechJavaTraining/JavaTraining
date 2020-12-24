@@ -84,8 +84,8 @@ public class TeamServiceTest {
         team.setName("Norbeee");
         team.setId(2L);
         Team team1 = new Team();
-        team.setName("Norbeee");
-        team.setId(2L);
+        team1.setName("Norbeee");
+        team1.setId(2L);
         List<Team> teams = new ArrayList<>();
         teams.add(team);
         teams.add(team1);
@@ -94,8 +94,8 @@ public class TeamServiceTest {
         teamEntity.setName("Norbeee");
         teamEntity.setId(2L);
         TeamEntity teamEntity1 = new TeamEntity();
-        teamEntity.setName("Norbeee");
-        teamEntity.setId(2L);
+        teamEntity1.setName("Norbeee");
+        teamEntity1.setId(2L);
         List<TeamEntity> teamEntities = new ArrayList<>();
         teamEntities.add(teamEntity);
         teamEntities.add(teamEntity1);
