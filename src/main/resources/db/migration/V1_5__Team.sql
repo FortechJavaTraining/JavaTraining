@@ -8,3 +8,9 @@ create table  TEAM
 CREATE SEQUENCE S_TEAM
     START WITH 1
     INCREMENT BY 1;
+
+-- DROP TABLE TEAM
+-- DROP SEQUENCE S_TEAM
+
+--  ALTER TABLE flyway_schema_history
+-- DROP COLUMN where version = 1.5;
