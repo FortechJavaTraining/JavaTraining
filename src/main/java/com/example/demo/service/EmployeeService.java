@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Employee;
+import com.example.demo.dto.TeamLeadDto;
 import com.example.demo.entities.DepartmentEntity;
 import com.example.demo.entities.EmployeeEntity;
 import com.example.demo.entities.TeamEntity;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -94,5 +96,23 @@ public class EmployeeService {
 
     private TeamEntity getTeamEntity(Long id) {
         return teamRepository.findById(id).orElseThrow(() -> new TeamNotFoundException(id));
+    }
+
+    public void updateEmployeeTeamLead(TeamLeadDto teamLeadDto) {
+        EmployeeEntity employeeTeamLead = employeeRepository.findById(teamLeadDto.getTeamLeadId()).orElseThrow(() -> new EmployeeNotFoundException(teamLeadDto.getTeamLeadId()));
+        for (Long employeesId : teamLeadDto.getEmployees()) {
+            EmployeeEntity employeeEntity = employeeRepository.findById(employeesId).orElseThrow(() -> new EmployeeNotFoundException(employeesId));
+            employeeEntity.setTeamLead(employeeTeamLead);
+            employeeRepository.save(employeeEntity);
+        }
+    }
+
+    public void deleteTeamLeadId(List<Long> employeeId) {
+        for (int i = 0; i < employeeId.size(); i++) {
+            int finalI = i;
+            EmployeeEntity employeeEntity = employeeRepository.findById(employeeId.get(i)).orElseThrow(() -> new EmployeeNotFoundException(employeeId.get(finalI)));
+            employeeEntity.setTeamLead(null);
+            employeeRepository.save(employeeEntity);
+        }
     }
 }
