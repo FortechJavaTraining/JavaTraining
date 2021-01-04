@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.PageRequestDto;
 import com.example.demo.dto.Team;
 import com.example.demo.service.TeamService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +25,11 @@ public class TeamController {
     @GetMapping(value = "/teams", produces = APPLICATION_JSON_VALUE)
     List<Team> getAllTeams() {
         return service.getAllTeams();
+    }
+
+    @PostMapping(value = "/teams/Page/{name}/{externalId}", produces = APPLICATION_JSON_VALUE)
+    Page<Team> getAllTeamsPage(@RequestBody PageRequestDto pageRequestDto, @PathVariable String name, @PathVariable String externalId) {
+        return service.getAllTeamsPage(pageRequestDto, name, externalId);
     }
 
     @GetMapping(value = "/team/{id}", produces = APPLICATION_JSON_VALUE)

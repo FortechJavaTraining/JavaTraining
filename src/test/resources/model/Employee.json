@@ -1,6 +1,8 @@
 {
   "id" : 1,
-  "name" : "eduard",
+  "name" : "Alex",
+  "job": "Baker",
   "departmentId" : 1,
-  "departmentName" : "production"
+  "departmentName" : "production",
+  "userId": 1
 }

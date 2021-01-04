@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.Department;
+import com.example.demo.dto.PageRequestDto;
 import com.example.demo.service.DepartmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +25,11 @@ public class DepartmentController {
     @GetMapping(value = "/departments", produces = APPLICATION_JSON_VALUE)
     List<Department> getAllDepartments() {
         return service.getAllDepartments();
+    }
+
+    @PostMapping(value = "/departments/Page/{name}", produces = APPLICATION_JSON_VALUE)
+    Page<Department> getAllDepartmentsPage(@RequestBody PageRequestDto pageRequestDto, @PathVariable String name) {
+        return service.getAllDepartmentsPage(pageRequestDto, name);
     }
 
     @GetMapping(value = "/department/{id}", produces = APPLICATION_JSON_VALUE)

@@ -14,11 +14,6 @@ import java.util.List;
 public class EmployeeControllerXml {
     private final EmployeeService service;
 
-    @PostMapping(value = "/employeex", consumes = MediaType.APPLICATION_XML_VALUE)
-    void addNewEmployee(@RequestBody Employee employee) {
-        service.saveEmployee(employee);
-    }
-
     @GetMapping(value = "/employeesx", produces = MediaType.APPLICATION_XML_VALUE)
     List<Employee> getAllEmployees() {
         return service.getAllEmployees();

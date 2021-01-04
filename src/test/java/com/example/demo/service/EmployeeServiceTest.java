@@ -1,18 +1,27 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Employee;
+import com.example.demo.dto.PageRequestDto;
 import com.example.demo.dto.TeamLeadDto;
+import com.example.demo.dto.User;
 import com.example.demo.entities.DepartmentEntity;
 import com.example.demo.entities.EmployeeEntity;
+import com.example.demo.entities.UserEntity;
+import com.example.demo.exeption.DepartmentNotFoundException;
 import com.example.demo.exeption.EmployeeNotFoundException;
+import com.example.demo.exeption.UserNotFoundException;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +31,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class EmployeeServiceTest {
 
     @InjectMocks
@@ -31,6 +40,8 @@ public class EmployeeServiceTest {
     private EmployeeRepository employeeRepository;
     @Mock
     private DepartmentRepository departmentRepository;
+    @Mock
+    private UserRepository userRepository;
 
     @Test
     public void givenAnEntity_getEmployeeById_shouldReturnValidDto() {
@@ -44,6 +55,11 @@ public class EmployeeServiceTest {
         departmentEntity.setId(1L);
         employeeEntity.setDepartmentEntity(departmentEntity);
 
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        employeeEntity.setUserEntity(userEntity);
+
         when(employeeRepository.findById(3L)).thenReturn(Optional.of(employeeEntity));
 
         Employee employeeByTd = service.getEmployeeById(3L);
@@ -51,13 +67,34 @@ public class EmployeeServiceTest {
         assertEquals(employee.getId(), employeeByTd.getId());
     }
 
+    @Test(expected = EmployeeNotFoundException.class)
+    public void givenAnEntity_getEmployeeById_ExpectException() {
+        Employee employee = new Employee();
+        employee.setId(3L);
 
-    @Test
-    public void givenAnEntity_saveEmployee_shouldReturnValidDto() {
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setId(3L);
+
+        DepartmentEntity departmentEntity = new DepartmentEntity();
+        departmentEntity.setId(1L);
+        employeeEntity.setDepartmentEntity(departmentEntity);
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        employeeEntity.setUserEntity(userEntity);
+
+
+        Employee employeeByTd = service.getEmployeeById(3L);
+
+        assertEquals(employee.getId(), employeeByTd.getId());
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void givenAnEntity_updateEmployee_ExpectException() {
         Employee employee = new Employee();
         employee.setName("Norbeee");
         employee.setId(2L);
-        employee.setDepartmentId(2L);
+        employee.setDepartmentId(1L);
 
         EmployeeEntity employeeEntity = new EmployeeEntity();
         employeeEntity.setName("Norbeee");
@@ -67,10 +104,14 @@ public class EmployeeServiceTest {
         departmentEntity.setId(1L);
         employeeEntity.setDepartmentEntity(departmentEntity);
 
-        when(departmentRepository.findById(2L)).thenReturn(Optional.of(new DepartmentEntity("")));
-        when(employeeRepository.save(Mockito.any(EmployeeEntity.class))).thenReturn(employeeEntity);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        employee.setUserId(1L);
 
-        Employee employee2 = service.saveEmployee(employee);
+        when(employeeRepository.findById(2L)).thenReturn(Optional.of(employeeEntity));
+        when(departmentRepository.findById(1L)).thenReturn(Optional.of(new DepartmentEntity("")));
+
+        Employee employee2 = service.updateEmployee(employee, 2L);
 
         assertEquals(employee.getName(), employee2.getName());
     }
@@ -90,9 +131,13 @@ public class EmployeeServiceTest {
         departmentEntity.setId(1L);
         employeeEntity.setDepartmentEntity(departmentEntity);
 
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        employee.setUserId(1L);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
         when(employeeRepository.findById(2L)).thenReturn(Optional.of(employeeEntity));
         when(departmentRepository.findById(1L)).thenReturn(Optional.of(new DepartmentEntity("")));
-        when(employeeRepository.save(Mockito.any(EmployeeEntity.class))).thenReturn(employeeEntity);
 
         Employee employee2 = service.updateEmployee(employee, 2L);
 
@@ -101,14 +146,18 @@ public class EmployeeServiceTest {
 
     @Test
     public void givenAnEntity_getAllEmployees_shouldReturnValidDto() {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
         Employee employee = new Employee();
         employee.setName("Norbeee");
         employee.setId(2L);
         employee.setDepartmentId(1L);
+        employee.setUserId(1L);
         Employee employee1 = new Employee();
-        employee.setName("Norbeee");
-        employee.setId(2L);
-        employee.setDepartmentId(1L);
+        employee1.setName("Norbeee");
+        employee1.setId(2L);
+        employee1.setDepartmentId(1L);
+        employee1.setUserId(1L);
         List<Employee> employees = new ArrayList<>();
         employees.add(employee);
         employees.add(employee1);
@@ -119,14 +168,19 @@ public class EmployeeServiceTest {
         EmployeeEntity employeeEntity = new EmployeeEntity();
         employeeEntity.setName("Norbeee");
         employeeEntity.setId(2L);
+        employeeEntity.setUserEntity(userEntity);
         EmployeeEntity employeeEntity1 = new EmployeeEntity();
-        employeeEntity.setName("Norbeee");
-        employeeEntity.setId(2L);
+        employeeEntity1.setName("Norbeee");
+        employeeEntity1.setId(2L);
+        employeeEntity1.setUserEntity(userEntity);
+
+
         List<EmployeeEntity> employeeEntities = new ArrayList<>();
         employeeEntities.add(employeeEntity);
         employeeEntities.add(employeeEntity1);
         employeeEntity.setDepartmentEntity(departmentEntity);
         employeeEntity1.setDepartmentEntity(departmentEntity);
+
 
         when(employeeRepository.findAll()).thenReturn(employeeEntities);
 
@@ -147,6 +201,10 @@ public class EmployeeServiceTest {
         departmentEntity.setId(1L);
         employeeEntity.setDepartmentEntity(departmentEntity);
 
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        employeeEntity.setUserEntity(userEntity);
+
         when(employeeRepository.findById(3L)).thenReturn(Optional.of(employeeEntity));
 
         Employee employeeByTd = service.deleteEmployee(3L);
@@ -154,6 +212,65 @@ public class EmployeeServiceTest {
         assertEquals(employee.getId(), employeeByTd.getId());
 
         verify(employeeRepository).deleteById(3L);
+    }
+
+    @Test
+    public void givenAnEntity_getEmployeeToUser_shouldReturnValid() {
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setName("Alex");
+        employeeEntity.setJob("Baker");
+
+        User user = new User();
+        user.setDepartmentId(1L);
+        user.setEmployeeName("Alex");
+        user.setEmployeeJob("Baker");
+        UserEntity userEntity = new UserEntity();
+
+        DepartmentEntity departmentEntity = new DepartmentEntity();
+        departmentEntity.setId(1L);
+        employeeEntity.setDepartmentEntity(departmentEntity);
+        employeeEntity.setUserEntity(userEntity);
+
+        when(employeeRepository.save(Mockito.any(EmployeeEntity.class))).thenReturn(employeeEntity);
+        when(departmentRepository.findById(1L)).thenReturn(Optional.of(departmentEntity));
+
+        service.getEmployeeToUser(userEntity, user);
+
+        assertEquals(employeeEntity.getUserEntity(), userEntity);
+        assertEquals(employeeEntity.getName(), user.getEmployeeName());
+        assertEquals(employeeEntity.getJob(), user.getEmployeeJob());
+        assertEquals(employeeEntity.getDepartmentEntity(), departmentEntity);
+
+        verify(employeeRepository, times(1)).save(any());
+
+    }
+
+    @Test(expected = DepartmentNotFoundException.class)
+    public void givenAnEntity_getEmployeeToUser_ExpectException() {
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setName("Alex");
+        employeeEntity.setJob("Baker");
+
+        User user = new User();
+        user.setDepartmentId(1L);
+        user.setEmployeeName("Alex");
+        user.setEmployeeJob("Baker");
+        UserEntity userEntity = new UserEntity();
+
+        DepartmentEntity departmentEntity = new DepartmentEntity();
+        departmentEntity.setId(1L);
+        employeeEntity.setDepartmentEntity(departmentEntity);
+        employeeEntity.setUserEntity(userEntity);
+
+        service.getEmployeeToUser(userEntity, user);
+
+        assertEquals(employeeEntity.getUserEntity(), userEntity);
+        assertEquals(employeeEntity.getName(), user.getEmployeeName());
+        assertEquals(employeeEntity.getJob(), user.getEmployeeJob());
+        assertEquals(employeeEntity.getDepartmentEntity(), departmentEntity);
+
+        verify(employeeRepository, times(1)).save(any());
+
     }
 
     @Test
@@ -222,6 +339,47 @@ public class EmployeeServiceTest {
 
         service.deleteTeamLeadId(employeeId);
 
+    }
 
+    @Test
+    public void givenAnEntity_getAllEmployeesPageName_shouldReturnValidDto() {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+        Employee employee = new Employee();
+        employee.setName("Alex");
+        employee.setId(1L);
+        employee.setDepartmentId(1L);
+        employee.setUserId(1L);
+        employee.setJob("baker");
+
+        List<Employee> employees = new ArrayList<>();
+        employees.add(employee);
+
+        Page<Employee> employeePage = new PageImpl<>(employees);
+        PageRequestDto pageRequestDto = new PageRequestDto();
+        pageRequestDto.setPageNumber(1);
+        pageRequestDto.setPageSize(1);
+
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setName("Sandu");
+        employeeEntity.setId(2L);
+        employeeEntity.setJob("baker");
+        employeeEntity.setUserEntity(userEntity);
+        DepartmentEntity departmentEntity = new DepartmentEntity();
+        departmentEntity.setId(1L);
+        employeeEntity.setDepartmentEntity(departmentEntity);
+
+        List<EmployeeEntity> employeeEntities = new ArrayList<>();
+        employeeEntities.add(employeeEntity);
+
+        Page<EmployeeEntity> employeeEntityPage = new PageImpl<>(employeeEntities);
+
+
+        when(employeeRepository.findAllByNameContainsOrJobContains(employee.getName(), employee.getJob(), PageRequest.of(pageRequestDto.getPageNumber(), pageRequestDto.getPageSize())))
+                .thenReturn(employeeEntityPage);
+
+        Page<Employee> allEmployeesPage = service.getAllEmployeesPages(pageRequestDto, employee.getName(), employee.getJob());
+
+        assertEquals(employeePage.getSize(), allEmployeesPage.getSize());
     }
 }

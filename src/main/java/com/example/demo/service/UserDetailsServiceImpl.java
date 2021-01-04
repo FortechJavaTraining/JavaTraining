@@ -21,10 +21,3 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new User(username, userEntity.getPassword(), Collections.emptyList());
     }
 }
-
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
-//
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return new User(username, bCryptPasswordEncoder.encode("password"), Collections.emptyList());
-//    }

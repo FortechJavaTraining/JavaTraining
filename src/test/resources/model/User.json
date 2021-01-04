@@ -1,5 +1,8 @@
 {
   "id" : 1,
-  "userName" : "test",
-  "password" : "test1"
+  "userName" : "eduard",
+  "password" : 1,
+  "employeeName" : "Alex",
+  "employeeJob": "Baker",
+  "departmentId": 1
 }

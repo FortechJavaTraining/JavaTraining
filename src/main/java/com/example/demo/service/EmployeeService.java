@@ -1,18 +1,25 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Employee;
+import com.example.demo.dto.PageRequestDto;
 import com.example.demo.dto.TeamLeadDto;
+import com.example.demo.dto.User;
 import com.example.demo.entities.DepartmentEntity;
 import com.example.demo.entities.EmployeeEntity;
 import com.example.demo.entities.TeamEntity;
+import com.example.demo.entities.UserEntity;
 import com.example.demo.exeption.DepartmentNotFoundException;
 import com.example.demo.exeption.EmployeeNotFoundException;
 import com.example.demo.exeption.TeamNotFoundException;
+import com.example.demo.exeption.UserNotFoundException;
 import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.TeamRepository;
+import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,15 +31,8 @@ import java.util.stream.StreamSupport;
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
+    private final UserRepository userRepository;
     private final TeamRepository teamRepository;
-
-
-    public Employee saveEmployee(Employee employee) {
-        EmployeeEntity employeeEntity = new EmployeeEntity();
-        setEmployeeEntity(employee, employeeEntity);
-        EmployeeEntity employeeEntity1 = employeeRepository.save(employeeEntity);
-        return convertEntityToEmployee(employeeEntity1);
-    }
 
     public List<Employee> getAllEmployees() {
         return StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
@@ -57,6 +57,15 @@ public class EmployeeService {
         return employee;
     }
 
+    public void getEmployeeToUser(UserEntity userEntity, User user) {
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setUserEntity(userEntity);
+        employeeEntity.setName(user.getEmployeeName());
+        employeeEntity.setJob(user.getEmployeeJob());
+        employeeEntity.setDepartmentEntity(getDepartmentEntity(user.getDepartmentId()));
+        employeeRepository.save(employeeEntity);
+    }
+
     private Employee convertEntityToEmployee(EmployeeEntity employeeEntity) {
         Employee employee = new Employee();
         employee.setName(employeeEntity.getName());
@@ -68,6 +77,7 @@ public class EmployeeService {
         employee.setDepartmentName(employeeEntity.getDepartmentEntity().getName());
         if (employeeEntity.getTeamEntity() != null)
             employee.setTeamName(employeeEntity.getTeamEntity().getName());
+        employee.setUserId(employeeEntity.getUserEntity().getId());
         return employee;
     }
 
@@ -81,6 +91,8 @@ public class EmployeeService {
         employeeEntity.setName(employee.getName());
         employeeEntity.setJob(employee.getJob());
         employeeEntity.setDepartmentEntity(getDepartmentEntity(employee.getDepartmentId()));
+        employeeEntity.setUserEntity(getUserEntity(employee.getUserId()));
+
         if (employee.getTeamId() != 0)
             employeeEntity.setTeamEntity(getTeamEntity(employee.getTeamId()));
     }
@@ -91,6 +103,10 @@ public class EmployeeService {
 
     private DepartmentEntity getDepartmentEntity(Long id) {
         return departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFoundException(id));
+    }
+
+    private UserEntity getUserEntity(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     private TeamEntity getTeamEntity(Long id) {
@@ -113,5 +129,10 @@ public class EmployeeService {
             employeeEntity.setTeamLead(null);
             employeeRepository.save(employeeEntity);
         }
+    }
+
+    public Page<Employee> getAllEmployeesPages(PageRequestDto pageRequestDto, String name, String job) {
+        return employeeRepository.findAllByNameContainsOrJobContains(name, job, PageRequest.of(pageRequestDto.getPageNumber(), pageRequestDto.getPageSize()))
+                .map(this::convertEntityToEmployee);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Employee;
+import com.example.demo.dto.PageRequestDto;
 import com.example.demo.dto.Team;
 import com.example.demo.entities.EmployeeEntity;
 import com.example.demo.entities.TeamEntity;
@@ -10,6 +11,8 @@ import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.TeamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -55,14 +58,14 @@ public class TeamService {
 
     private Team convertTeamEntityToTeam(TeamEntity teamEntity) {
         Team team = new Team();
-            team.setId(teamEntity.getId());
+        team.setId(teamEntity.getId());
         if (teamEntity.getName() != null)
             team.setName(teamEntity.getName());
         if (teamEntity.getTeamLead() != null)
             team.setTeamLead(teamEntity.getTeamLead().getId());
         if (teamEntity.getExternalId() != null)
             team.setExternalId(teamEntity.getExternalId());
-            team.setTeamMembers(convertTeamEntityToEmployee(teamEntity));
+        team.setTeamMembers(convertTeamEntityToEmployee(teamEntity));
         return team;
     }
 
@@ -108,5 +111,10 @@ public class TeamService {
 
     private EmployeeEntity getEmployeeEntity(Long id) {
         return employeeRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
+    }
+
+    public Page<Team> getAllTeamsPage(PageRequestDto pageRequestDto, String name, String externalId) {
+        return teamRepository.findAllByNameContainsOrExternalIdContains(name, externalId, PageRequest.of(pageRequestDto.getPageNumber(), pageRequestDto.getPageSize()))
+                .map(this::convertTeamEntityToTeam);
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.Department;
 import com.example.demo.dto.Employee;
+import com.example.demo.dto.PageRequestDto;
 import com.example.demo.entities.DepartmentEntity;
 import com.example.demo.entities.EmployeeEntity;
 import com.example.demo.exeption.DepartmentNotFoundException;
@@ -9,6 +10,8 @@ import com.example.demo.exeption.EmployeeExistInDepartment;
 import com.example.demo.repository.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -94,5 +97,10 @@ public class DepartmentService {
 
     private DepartmentEntity getDepartmentEntity(Long id) {
         return departmentRepository.findById(id).orElseThrow(() -> new DepartmentNotFoundException(id));
+    }
+
+    public Page<Department> getAllDepartmentsPage(PageRequestDto pageRequestDto, String name) {
+        return departmentRepository.findAllByNameContains(name, PageRequest.of(pageRequestDto.getPageNumber(), pageRequestDto.getPageSize()))
+                .map(this::convertDepartmentEntityToDepartment);
     }
 }

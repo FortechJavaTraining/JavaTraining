@@ -1,7 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Department;
+import com.example.demo.dto.PageRequestDto;
 import com.example.demo.entities.DepartmentEntity;
+import com.example.demo.entities.EmployeeEntity;
+import com.example.demo.entities.UserEntity;
+import com.example.demo.exeption.EmployeeExistInDepartment;
 import com.example.demo.repository.DepartmentRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,13 +13,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class DepartmentServiceTest {
@@ -120,5 +128,59 @@ public class DepartmentServiceTest {
         assertEquals(department.getId(), departmentByTd.getId());
 
         verify(departmentRepository).deleteById(3L);
+    }
+
+    @Test(expected = EmployeeExistInDepartment.class)
+    public void givenAnEntity_deleteDepartment_ExpectException() {
+
+        DepartmentEntity departmentEntity = new DepartmentEntity();
+        departmentEntity.setId(3L);
+        departmentEntity.setName("HR");
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1L);
+
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        List<EmployeeEntity> employeeEntityList = new ArrayList<>();
+        employeeEntity.setId(1L);
+        employeeEntity.setName("Alex");
+        employeeEntity.setUserEntity(userEntity);
+        employeeEntity.setDepartmentEntity(departmentEntity);
+        employeeEntityList.add(employeeEntity);
+        departmentEntity.setEmployeeEntityList(employeeEntityList);
+
+        when(departmentRepository.findById(1L)).thenReturn(Optional.of(departmentEntity));
+        service.deleteDepartment(1L);
+    }
+
+    @Test
+    public void givenAnEntity_getAllDepartmentsPage_shouldReturnValidDto() {
+        Department department = new Department();
+        department.setName("HR");
+        department.setId(1L);
+
+        List<Department> departments = new ArrayList<>();
+        departments.add(department);
+
+        DepartmentEntity departmentEntity = new DepartmentEntity();
+        departmentEntity.setName("HR");
+        departmentEntity.setId(2L);
+
+        Page<Department> departmentPage = new PageImpl<>(departments);
+        PageRequestDto pageRequestDto = new PageRequestDto();
+        pageRequestDto.setPageNumber(1);
+        pageRequestDto.setPageSize(1);
+
+        List<DepartmentEntity> departmentEntities = new ArrayList<>();
+        departmentEntities.add(departmentEntity);
+
+        Page<DepartmentEntity> departmentEntityPage = new PageImpl<>(departmentEntities);
+
+        when(departmentRepository.findAllByNameContains(department.getName(), PageRequest.of(pageRequestDto.getPageNumber(), pageRequestDto.getPageSize())))
+                .thenReturn(departmentEntityPage);
+
+        Page<Department> allDepartmentsPage = service.getAllDepartmentsPage(pageRequestDto, department.getName());
+
+        assertEquals(departmentPage.getTotalPages(), allDepartmentsPage.getTotalPages());
     }
 }

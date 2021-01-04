@@ -1,0 +1,4 @@
+Alter table EMPLOYEE
+ADD COLUMN USER_ID bigint not null constraint FK_EMPLOYEE_USERS_ID unique references USERS(ID),
+ADD FOREIGN KEY (USER_ID) REFERENCES USERS (ID);
+

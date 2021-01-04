@@ -28,6 +28,11 @@ public class EmployeeEntity {
     @JoinColumn(name = "DEPARTMENT_ID")
     private DepartmentEntity departmentEntity;
 
+    @OneToOne
+    @JoinColumn(name="USER_ID")
+    private UserEntity userEntity;
+
+
     @ManyToOne
     @JoinColumn(name = "TEAM_ID")
     private TeamEntity teamEntity;

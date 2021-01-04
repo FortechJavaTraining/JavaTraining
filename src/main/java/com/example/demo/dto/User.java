@@ -9,4 +9,8 @@ public class User {
     private long id;
     private String userName;
     private String password;
+    private String employeeName;
+    private String employeeJob;
+    private long departmentId;
+
 }

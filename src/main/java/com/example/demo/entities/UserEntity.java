@@ -23,7 +23,11 @@ public class UserEntity {
     @Column(name = "PASSWORD")
     private String password;
 
-    public UserEntity(String userName) {
-        this.userName = userName;
-    }
+    @OneToOne(mappedBy = "userEntity",
+            fetch = FetchType.LAZY
+    )
+    private EmployeeEntity employeeEntity;
+
+
+
 }
