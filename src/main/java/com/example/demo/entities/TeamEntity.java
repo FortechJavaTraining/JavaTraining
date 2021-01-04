@@ -32,6 +32,10 @@ public class TeamEntity {
     @OneToMany(mappedBy = "teamEntity", fetch = FetchType.LAZY)
     private List<EmployeeEntity> employeeEntityList = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "PROJECT_ID")
+    private ProjectEntity projectEntity;
+
     public TeamEntity(String name) {
         this.name = name;
     }

@@ -1,15 +1,19 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Employee;
+import com.example.demo.dto.Project;
 import com.example.demo.dto.Team;
 import com.example.demo.entities.EmployeeEntity;
+import com.example.demo.entities.ProjectEntity;
 import com.example.demo.entities.TeamEntity;
 import com.example.demo.exeption.EmployeeNotFoundException;
 import com.example.demo.exeption.TeamNotFoundException;
 import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.repository.ProjectRepository;
 import com.example.demo.repository.TeamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +26,7 @@ import java.util.stream.StreamSupport;
 public class TeamService {
     private final TeamRepository teamRepository;
     private final EmployeeRepository employeeRepository;
+    private final ProjectRepository projectRepository;
 
     public Team saveTeam(Team team) {
         TeamEntity teamEntity = new TeamEntity();
@@ -55,14 +60,14 @@ public class TeamService {
 
     private Team convertTeamEntityToTeam(TeamEntity teamEntity) {
         Team team = new Team();
-            team.setId(teamEntity.getId());
+        team.setId(teamEntity.getId());
         if (teamEntity.getName() != null)
             team.setName(teamEntity.getName());
         if (teamEntity.getTeamLead() != null)
             team.setTeamLead(teamEntity.getTeamLead().getId());
         if (teamEntity.getExternalId() != null)
             team.setExternalId(teamEntity.getExternalId());
-            team.setTeamMembers(convertTeamEntityToEmployee(teamEntity));
+        team.setTeamMembers(convertTeamEntityToEmployee(teamEntity));
         return team;
     }
 
@@ -108,5 +113,20 @@ public class TeamService {
 
     private EmployeeEntity getEmployeeEntity(Long id) {
         return employeeRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
+    }
+
+    private ProjectEntity getProjectEntity(Long id) {
+        return projectRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
+    }
+
+    public Project getProjectById(Long id) {
+        ProjectEntity projectEntity = getProjectEntity(id);
+        return convertProjectEntityToProject(projectEntity);
+    }
+
+    private Project convertProjectEntityToProject(ProjectEntity projectEntity) {
+        Project project = new Project();
+        project.setExternalID(projectEntity.getExternalID());
+        return project;
     }
 }

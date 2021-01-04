@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.Project;
 import com.example.demo.dto.Team;
 import com.example.demo.service.TeamService;
 import lombok.AllArgsConstructor;
@@ -38,5 +39,10 @@ public class TeamController {
     @DeleteMapping(value = "/team/{id}")
     Team deleteTeam(@PathVariable Long id) {
         return service.deleteTeam(id);
+    }
+
+    @GetMapping(value = "/team/project/{id}", produces = APPLICATION_JSON_VALUE)
+    Project getProjectById(@PathVariable Long id) {
+        return service.getProjectById(id);
     }
 }

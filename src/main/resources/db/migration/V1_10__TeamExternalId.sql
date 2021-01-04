@@ -1,0 +1,7 @@
+ALTER TABLE TEAM ALTER COLUMN EXTERNAL_ID TYPE varchar(255);
+
+-- ALTER TABLE TEAM
+-- ALTER COLUMN EXTERNAL_ID TYPE bigint not null;
+
+--  ALTER TABLE flyway_schema_history
+-- DROP COLUMN where version = 1.10;
