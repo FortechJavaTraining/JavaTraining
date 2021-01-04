@@ -1,10 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Department;
-import com.example.demo.dto.Department;
 import com.example.demo.entities.DepartmentEntity;
-import com.example.demo.entities.DepartmentEntity;
-import com.example.demo.repository.DepartmentRepository;
 import com.example.demo.repository.DepartmentRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;

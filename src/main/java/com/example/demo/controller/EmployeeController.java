@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.Employee;
+import com.example.demo.dto.TeamLeadDto;
 import com.example.demo.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,20 @@ public class EmployeeController {
 
     @PutMapping(value = "/employee/{id}")
     Employee updateEmployee(@RequestBody Employee employee, @PathVariable Long id) {
-        return service.updateEmployee(employee, id);
-    }
+        return service.updateEmployee(employee, id); }
 
     @DeleteMapping(value = "/employee/{id}")
     Employee deleteEmployee(@PathVariable Long id) {
         return service.deleteEmployee(id);
+    }
+
+    @PutMapping(value = "/employees/teamLead")
+    void updateEmployeeTeamLead(@RequestBody TeamLeadDto teamLeadDto) {
+        service.updateEmployeeTeamLead(teamLeadDto);
+    }
+
+    @DeleteMapping(value = "/employee/teamLeadId")
+    void deleteTeamLeadId(@RequestBody List<Long> employeeId) {
+        service.deleteTeamLeadId(employeeId);
     }
 }

@@ -1,0 +1,11 @@
+ALTER TABLE EMPLOYEE
+    ADD COLUMN TEAM_LEAD bigint;
+
+
+-- ALTER TABLE EMPLOYEE
+-- DROP COLUMN TEAM_LEAD;
+
+--  ALTER TABLE flyway_schema_history
+-- DROP COLUMN where version = 1.4;
+
+
