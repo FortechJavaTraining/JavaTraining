@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -25,8 +27,10 @@ public class ProjectEntity {
     @Column(name = "NAME", unique = true)
     private String name;
 
+    @OneToMany(mappedBy = "projectEntity", fetch = FetchType.LAZY)
+    private List<TeamEntity> teamEntityList = new ArrayList<>();
+
     public ProjectEntity() {
         this.externalID = UUID.randomUUID().toString();
     }
-
 }
