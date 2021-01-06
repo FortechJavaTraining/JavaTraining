@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.Project;
 import com.example.demo.dto.Team;
-import com.example.demo.entities.EmployeeEntity;
-import com.example.demo.entities.TeamEntity;
 import com.example.demo.exeption.ProjectNotFoundException;
 import com.example.demo.service.ProjectService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ProjectControllerTest {
 
     private static final String PATH = "/project";
