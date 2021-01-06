@@ -5,7 +5,10 @@ import com.example.demo.dto.Team;
 import com.example.demo.entities.DepartmentEntity;
 import com.example.demo.entities.EmployeeEntity;
 import com.example.demo.entities.TeamEntity;
+import com.example.demo.exeption.EmployeeNotFoundException;
+import com.example.demo.exeption.TeamLeadNotFound;
 import com.example.demo.repository.DepartmentRepository;
+import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.TeamRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +30,8 @@ public class TeamServiceTest {
     private TeamService service;
     @Mock
     private TeamRepository teamRepository;
+    @Mock
+    private EmployeeRepository employeeRepository;
 
     @Test
     public void givenAnEntity_getTeamById_shouldReturnValidDto() {
@@ -48,16 +53,34 @@ public class TeamServiceTest {
         Team team = new Team();
         team.setName("Norbeee");
         team.setId(1L);
+        team.setTeamLead(1L);
 
         TeamEntity teamEntity = new TeamEntity();
         teamEntity.setName("Norbeee");
         teamEntity.setId(1L);
 
+        when(employeeRepository.countAllByTeamLeadId(team.getTeamLead())).thenReturn(1L);
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(new EmployeeEntity()));
         when(teamRepository.save(Mockito.any(TeamEntity.class))).thenReturn(teamEntity);
 
         Team team2 = service.saveTeam(team);
-
         assertEquals(team.getName(), team2.getName());
+    }
+
+    @Test(expected = TeamLeadNotFound.class)
+    public void givenAnEntity_saveTeam_expectException() {
+        Team team = new Team();
+        team.setName("Norbeee");
+        team.setId(1L);
+        team.setTeamLead(1L);
+        TeamEntity teamEntity = new TeamEntity();
+        teamEntity.setName("Norbeee");
+        teamEntity.setId(1L);
+
+        when(employeeRepository.countAllByTeamLeadId(2L)).thenReturn(0L);
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(new EmployeeEntity()));
+
+        service.saveTeam(team);
     }
 
     @Test
@@ -70,12 +93,30 @@ public class TeamServiceTest {
         teamEntity.setName("Norbeee");
         teamEntity.setId(1L);
 
+        when(employeeRepository.countAllByTeamLeadId(team.getTeamLead())).thenReturn(1L);
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(new EmployeeEntity()));
         when(teamRepository.findById(1L)).thenReturn(Optional.of(teamEntity));
         when(teamRepository.save(Mockito.any(TeamEntity.class))).thenReturn(teamEntity);
 
         Team team2 = service.updateTeam(team, 1L);
-
         assertEquals(team.getName(), team2.getName());
+    }
+
+    @Test(expected = TeamLeadNotFound.class)
+    public void givenAnEntity_updateTeam_expectException() {
+        Team team = new Team();
+        team.setName("Norbeee");
+        team.setId(1L);
+        team.setTeamLead(1L);
+        TeamEntity teamEntity = new TeamEntity();
+        teamEntity.setName("Norbeee");
+        teamEntity.setId(1L);
+
+        when(teamRepository.findById(1L)).thenReturn(Optional.of(new TeamEntity()));
+        when(employeeRepository.countAllByTeamLeadId(2L)).thenReturn(0L);
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(new EmployeeEntity()));
+
+        service.updateTeam(team, 1L);
     }
 
     @Test
@@ -103,7 +144,6 @@ public class TeamServiceTest {
         when(teamRepository.findAll()).thenReturn(teamEntities);
 
         List<Team> teams1 = service.getAllTeams();
-
         assertEquals(teams.get(0).getName(), teams1.get(0).getName());
     }
 
@@ -118,7 +158,6 @@ public class TeamServiceTest {
         when(teamRepository.findById(1L)).thenReturn(Optional.of(teamEntity));
 
         Team teamByTd = service.deleteTeam(1L);
-
         assertEquals(team.getId(), teamByTd.getId());
 
         verify(teamRepository).deleteById(1L);
