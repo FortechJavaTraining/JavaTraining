@@ -35,10 +35,6 @@ public class ProjectServiceTest {
         projectEntity.setExternalID("1AL");
         projectEntity.setName("Tzaneim");
 
-//        when(projectRepository.findById(1L)).thenReturn(Optional.of(projectEntity));
-        when(projectRepository.findByExternalID("1AL")).thenReturn(Optional.of(projectEntity));
-
-
         when(projectRepository.findByExternalID("1AL")).thenReturn(Optional.of(projectEntity));
 
         Project projectById = service.getProjectById("1AL");
@@ -123,8 +119,6 @@ public class ProjectServiceTest {
         Project projectByTd = service.deleteProject("extID123");
 
         assertEquals(project.getExternalID(), projectByTd.getExternalID());
-
-        // verify(projectRepository).delete();
     }
 
 
