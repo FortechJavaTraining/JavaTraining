@@ -20,8 +20,8 @@ public class ProjectService {
     public Project saveProject(Project project) {
         ProjectEntity projectEntity = new ProjectEntity();
         setProjectEntity(project, projectEntity);
-        ProjectEntity projectEntity1 = projectRepository.save(projectEntity);
-        return convertProjectEntityToProject(projectEntity1);
+        ProjectEntity projectEntitySavedFromRepo = projectRepository.save(projectEntity);
+        return convertProjectEntityToProject(projectEntitySavedFromRepo);
     }
 
     public List<Project> getAllProjects() {
@@ -38,8 +38,8 @@ public class ProjectService {
         String externalId = project.getExternalID();
         ProjectEntity projectEntity = projectRepository.findByExternalID(externalId).orElseThrow(() -> new ProjectNotFoundException(externalId));
         projectEntity.setName(project.getName());
-        ProjectEntity projectEntity1 = projectRepository.save(projectEntity);
-        return convertProjectEntityToProject(projectEntity1);
+        ProjectEntity projectEntitySavedFromRepo = projectRepository.save(projectEntity);
+        return convertProjectEntityToProject(projectEntitySavedFromRepo);
     }
 
     public Project deleteProject(String externalId) {
