@@ -39,12 +39,6 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.3.7.RELEASE'
 }
 
-flyway {
-    url = 'jdbc:postgresql://localhost:5432/postgres'
-    user = 'user'
-    password = 'password'
-    locations = ['classpath:db/migration']
-}
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile){
