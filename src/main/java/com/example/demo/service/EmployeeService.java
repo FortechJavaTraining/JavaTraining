@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -64,8 +65,11 @@ public class EmployeeService {
         employee.setJob(employeeEntity.getJob());
         employee.setDepartmentId(employeeEntity.getDepartmentEntity().getId());
         employee.setDepartmentName(employeeEntity.getDepartmentEntity().getName());
-        if (employeeEntity.getTeamEntity() != null)
+        employee.setTeamLead(Optional.ofNullable(employeeEntity.getTeamLead())
+                .map(EmployeeEntity::getId).orElse(0L));
+        if (employeeEntity.getTeamEntity() != null) {
             employee.setTeamName(employeeEntity.getTeamEntity().getName());
+        }
         return employee;
     }
 
@@ -79,6 +83,7 @@ public class EmployeeService {
         employeeEntity.setName(employee.getName());
         employeeEntity.setJob(employee.getJob());
         employeeEntity.setDepartmentEntity(getDepartmentEntity(employee.getDepartmentId()));
+        employeeEntity.setTeamLead(getEmployeeEntity(employee.getTeamLead()));
         if (employee.getTeamId() != 0)
             employeeEntity.setTeamEntity(getTeamEntity(employee.getTeamId()));
     }

@@ -47,16 +47,21 @@ public class EmployeeServiceTest {
         when(employeeRepository.findById(3L)).thenReturn(Optional.of(employeeEntity));
 
         Employee employeeByTd = service.getEmployeeById(3L);
-
         assertEquals(employee.getId(), employeeByTd.getId());
     }
 
-
     @Test
     public void givenAnEntity_saveEmployee_shouldReturnValidDto() {
+        Employee employee1 = new Employee();
+        employee1.setName("Norbeee");
+        employee1.setId(1L);
+        employee1.setTeamLead(2L);
+        employee1.setDepartmentId(2L);
+
         Employee employee = new Employee();
         employee.setName("Norbeee");
         employee.setId(2L);
+        employee.setTeamLead(1L);
         employee.setDepartmentId(2L);
 
         EmployeeEntity employeeEntity = new EmployeeEntity();
@@ -67,20 +72,27 @@ public class EmployeeServiceTest {
         departmentEntity.setId(1L);
         employeeEntity.setDepartmentEntity(departmentEntity);
 
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employeeEntity));
         when(departmentRepository.findById(2L)).thenReturn(Optional.of(new DepartmentEntity("")));
         when(employeeRepository.save(Mockito.any(EmployeeEntity.class))).thenReturn(employeeEntity);
-
         Employee employee2 = service.saveEmployee(employee);
 
-        assertEquals(employee.getName(), employee2.getName());
+        assertEquals(employee.getName(), employee2.getName(),employee1.getName());
     }
 
     @Test
     public void givenAnEntity_updateEmployee_shouldReturnValidDto() {
         Employee employee = new Employee();
         employee.setName("Norbeee");
-        employee.setId(2L);
+        employee.setId(1L);
+        employee.setTeamLead(2L);
         employee.setDepartmentId(1L);
+
+        Employee employee1 = new Employee();
+        employee1.setName("Norbeee");
+        employee1.setId(2L);
+        employee1.setDepartmentId(1L);
+        employee1.setTeamLead(1L);
 
         EmployeeEntity employeeEntity = new EmployeeEntity();
         employeeEntity.setName("Norbeee");
@@ -152,7 +164,6 @@ public class EmployeeServiceTest {
         Employee employeeByTd = service.deleteEmployee(3L);
 
         assertEquals(employee.getId(), employeeByTd.getId());
-
         verify(employeeRepository).deleteById(3L);
     }
 
@@ -168,7 +179,6 @@ public class EmployeeServiceTest {
         service.updateEmployeeTeamLead(teamLeadDto);
 
         verify(employeeRepository, times(2)).save(employeeEntity);
-
     }
 
     @Test(expected = EmployeeNotFoundException.class)
@@ -180,7 +190,6 @@ public class EmployeeServiceTest {
 
         service.updateEmployeeTeamLead(teamLeadDto);
     }
-
 
     @Test
     public void givenEmployeeId_deleteTeamLead_expectValidDtoSuccess() {
@@ -194,7 +203,6 @@ public class EmployeeServiceTest {
         employeeEntities.add(employeeEntity);
         employeeEntities.add(employeeEntity1);
 
-
         List<Long> employeeId = new ArrayList<>();
         employeeId.add(1L);
         employeeId.add(2L);
@@ -205,9 +213,7 @@ public class EmployeeServiceTest {
         service.deleteTeamLeadId(employeeId);
 
         verify(employeeRepository, times(1)).save(employeeEntity);
-
     }
-
 
     @Test(expected = EmployeeNotFoundException.class)
     public void givenTeamLeadId_deleteTeamLead_expectException() {
@@ -221,6 +227,7 @@ public class EmployeeServiceTest {
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
 
         service.deleteTeamLeadId(employeeId);
+
     }
 
     @Test
@@ -255,5 +262,6 @@ public class EmployeeServiceTest {
 
     private void mockFindById(long l, Optional<EmployeeEntity> employeeEntity) {
         when(employeeRepository.findById(l)).thenReturn(employeeEntity);
+
     }
 }
