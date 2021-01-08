@@ -227,5 +227,41 @@ public class EmployeeServiceTest {
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
 
         service.deleteTeamLeadId(employeeId);
+
+    }
+
+    @Test
+    public void givenTeamLeadId_getSubEmployees(){
+        DepartmentEntity departmentEntity = new DepartmentEntity();
+        departmentEntity.setId(1L);
+        EmployeeEntity employeeEntity = getEmployeeTestEntity(1L,"Gradinar",null,departmentEntity);
+        EmployeeEntity employeeEntity1 = getEmployeeTestEntity(2L,"Macelar",employeeEntity,departmentEntity);
+        EmployeeEntity employeeEntity2 = getEmployeeTestEntity(3L,"Doctor",employeeEntity1,departmentEntity);
+
+        List<EmployeeEntity> employeeList = new ArrayList<>();
+        employeeList.add(employeeEntity1);
+        employeeList.add(employeeEntity2);
+
+        mockFindById(1L, Optional.of(employeeEntity));
+        mockFindById(2L, Optional.of(employeeEntity1));
+        mockFindById(3L, Optional.of(employeeEntity2));
+        when(employeeRepository.findAllByTeamLead(employeeEntity)).thenReturn(employeeList);
+
+        List<Employee> subEmployeesByTeamLeadId = service.getSubEmployeesByTeamLeadId(1L);
+        assertEquals(2,subEmployeesByTeamLeadId.size());
+    }
+
+    private EmployeeEntity getEmployeeTestEntity(Long id, String job, EmployeeEntity teamLead, DepartmentEntity departmentEntity){
+        EmployeeEntity employeeEntity = new EmployeeEntity();
+        employeeEntity.setId(id);
+        employeeEntity.setJob(job);
+        employeeEntity.setTeamLead(teamLead);
+        employeeEntity.setDepartmentEntity(departmentEntity);
+        return employeeEntity;
+    }
+
+    private void mockFindById(long l, Optional<EmployeeEntity> employeeEntity) {
+        when(employeeRepository.findById(l)).thenReturn(employeeEntity);
+
     }
 }

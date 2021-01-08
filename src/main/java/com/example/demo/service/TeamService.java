@@ -5,13 +5,13 @@ import com.example.demo.dto.Team;
 import com.example.demo.entities.EmployeeEntity;
 import com.example.demo.entities.TeamEntity;
 import com.example.demo.exeption.EmployeeNotFoundException;
+import com.example.demo.exeption.TeamLeadNotFound;
 import com.example.demo.exeption.TeamNotFoundException;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.TeamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,8 +26,12 @@ public class TeamService {
     public Team saveTeam(Team team) {
         TeamEntity teamEntity = new TeamEntity();
         setTeamEntity(team, teamEntity);
-        TeamEntity teamEntity1 = teamRepository.save(teamEntity);
-        return convertTeamEntityToTeam(teamEntity1);
+        if (employeeRepository.countAllByTeamLeadId(team.getTeamLead()) != 0) {
+            TeamEntity teamSavedInRepository = teamRepository.save(teamEntity);
+            return convertTeamEntityToTeam(teamSavedInRepository);
+        } else {
+            throw new TeamLeadNotFound(team.getTeamLead());
+        }
     }
 
     public List<Team> getAllTeams() {
@@ -42,8 +46,12 @@ public class TeamService {
 
     public Team updateTeam(Team team, Long id) {
         TeamEntity teamEntity = setTeamEntityDetails(team, id);
-        teamRepository.save(teamEntity);
-        return convertTeamEntityToTeam(teamEntity);
+        if (employeeRepository.countAllByTeamLeadId(team.getTeamLead()) != 0) {
+            teamRepository.save(teamEntity);
+            return convertTeamEntityToTeam(teamEntity);
+        } else {
+            throw new TeamLeadNotFound(team.getTeamLead());
+        }
     }
 
     public Team deleteTeam(Long id) {
