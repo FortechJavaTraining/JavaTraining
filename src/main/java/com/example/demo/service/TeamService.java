@@ -55,14 +55,14 @@ public class TeamService {
 
     private Team convertTeamEntityToTeam(TeamEntity teamEntity) {
         Team team = new Team();
-            team.setId(teamEntity.getId());
+        team.setId(teamEntity.getId());
         if (teamEntity.getName() != null)
             team.setName(teamEntity.getName());
         if (teamEntity.getTeamLead() != null)
             team.setTeamLead(teamEntity.getTeamLead().getId());
         if (teamEntity.getExternalId() != null)
             team.setExternalId(teamEntity.getExternalId());
-            team.setTeamMembers(convertTeamEntityToEmployee(teamEntity));
+        team.setTeamMembers(convertTeamEntityToEmployee(teamEntity));
         return team;
     }
 

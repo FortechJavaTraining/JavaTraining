@@ -20,7 +20,6 @@ public class EmployeeController {
     Employee saveEmployee(@RequestBody Employee employee) {
         return service.saveEmployee(employee);
     }
-
     @GetMapping(value = "/employees", produces = APPLICATION_JSON_VALUE)
     List<Employee> getAllEmployees() {
         return service.getAllEmployees();
