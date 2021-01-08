@@ -14,7 +14,6 @@ import com.example.demo.repository.TeamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -25,7 +24,6 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final TeamRepository teamRepository;
-
 
     public Employee saveEmployee(Employee employee) {
         EmployeeEntity employeeEntity = new EmployeeEntity();
@@ -113,5 +111,16 @@ public class EmployeeService {
             employeeEntity.setTeamLead(null);
             employeeRepository.save(employeeEntity);
         }
+    }
+
+    public List<Employee> getSubEmployeesByTeamLeadId(long teamLeadId) {
+        EmployeeEntity teamLead = employeeRepository.findById(teamLeadId).orElseThrow(() -> new EmployeeNotFoundException(teamLeadId));
+        List<Employee> directEmployees = employeeRepository.findAllByTeamLead(teamLead)
+                .stream()
+                .map(this::convertEntityToEmployee)
+                .collect(Collectors.toList());
+        for (Employee directEmployee : directEmployees)
+            directEmployee.setSubordinates(getSubEmployeesByTeamLeadId(directEmployee.getId()));
+        return directEmployees;
     }
 }

@@ -49,4 +49,9 @@ public class EmployeeController {
     void deleteTeamLeadId(@RequestBody List<Long> employeeId) {
         service.deleteTeamLeadId(employeeId);
     }
+
+    @GetMapping(value = "/employees/teamLead/{teamLeadId}")
+    void getEmployeesByTeamLeadId(@PathVariable Long teamLeadId){
+        service.getSubEmployeesByTeamLeadId(teamLeadId);
+    }
 }
