@@ -33,8 +33,7 @@ public class EmployeeController {
 
     @PutMapping(value = "/employee/{id}")
     Employee updateEmployee(@RequestBody Employee employee, @PathVariable Long id) {
-        return service.updateEmployee(employee, id);
-    }
+        return service.updateEmployee(employee, id); }
 
     @DeleteMapping(value = "/employee/{id}")
     Employee deleteEmployee(@PathVariable Long id) {
@@ -49,5 +48,10 @@ public class EmployeeController {
     @DeleteMapping(value = "/employee/teamLeadId")
     void deleteTeamLeadId(@RequestBody List<Long> employeeId) {
         service.deleteTeamLeadId(employeeId);
+    }
+
+    @GetMapping(value = "/employees/teamLead/{teamLeadId}")
+    void getEmployeesByTeamLeadId(@PathVariable Long teamLeadId){
+        service.getSubEmployeesByTeamLeadId(teamLeadId);
     }
 }

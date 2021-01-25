@@ -27,7 +27,6 @@ public class EmployeeService {
     private final DepartmentRepository departmentRepository;
     private final TeamRepository teamRepository;
 
-
     public Employee saveEmployee(Employee employee) {
         EmployeeEntity employeeEntity = new EmployeeEntity();
         setEmployeeEntity(employee, employeeEntity);
@@ -67,9 +66,8 @@ public class EmployeeService {
         employee.setJob(employeeEntity.getJob());
         employee.setDepartmentId(employeeEntity.getDepartmentEntity().getId());
         employee.setDepartmentName(employeeEntity.getDepartmentEntity().getName());
-        if (employeeEntity.getTeamEntity() != null)
-            employee.setTeamLead(Optional.ofNullable(employeeEntity.getTeamLead())
-                    .map(EmployeeEntity::getId).orElse(0L));
+        employee.setTeamLead(Optional.ofNullable(employeeEntity.getTeamLead())
+                .map(EmployeeEntity::getId).orElse(0L));
         if (employeeEntity.getTeamEntity() != null) {
             employee.setTeamName(employeeEntity.getTeamEntity().getName());
             employee.setTeamId(employeeEntity.getTeamEntity().getId());
@@ -120,5 +118,16 @@ public class EmployeeService {
             employeeEntity.setTeamLead(null);
             employeeRepository.save(employeeEntity);
         }
+    }
+
+    public List<Employee> getSubEmployeesByTeamLeadId(long teamLeadId) {
+        EmployeeEntity teamLead = employeeRepository.findById(teamLeadId).orElseThrow(() -> new EmployeeNotFoundException(teamLeadId));
+        List<Employee> directEmployees = employeeRepository.findAllByTeamLead(teamLead)
+                .stream()
+                .map(this::convertEntityToEmployee)
+                .collect(Collectors.toList());
+        for (Employee directEmployee : directEmployees)
+            directEmployee.setSubordinates(getSubEmployeesByTeamLeadId(directEmployee.getId()));
+        return directEmployees;
     }
 }
