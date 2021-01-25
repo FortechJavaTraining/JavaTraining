@@ -20,7 +20,6 @@ public class EmployeeController {
     Employee saveEmployee(@RequestBody Employee employee) {
         return service.saveEmployee(employee);
     }
-
     @GetMapping(value = "/employees", produces = APPLICATION_JSON_VALUE)
     List<Employee> getAllEmployees() {
         return service.getAllEmployees();
@@ -48,5 +47,10 @@ public class EmployeeController {
     @DeleteMapping(value = "/employee/teamLeadId")
     void deleteTeamLeadId(@RequestBody List<Long> employeeId) {
         service.deleteTeamLeadId(employeeId);
+    }
+
+    @GetMapping(value = "/employees/teamLead/{teamLeadId}")
+    void getEmployeesByTeamLeadId(@PathVariable Long teamLeadId){
+        service.getSubEmployeesByTeamLeadId(teamLeadId);
     }
 }
